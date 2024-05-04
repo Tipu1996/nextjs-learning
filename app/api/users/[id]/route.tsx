@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import schema from "../schema";
 
 interface Props {
-	params: { id: number };
+	params: { id: any };
 }
 
-export function GET({ params: { id } }: Props) {
-	if (id > 10)
+export function GET(request: NextRequest, { params }: Props) {
+	if (!params?.id) {
+		return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
+	}
+	if (params.id > 10)
 		return NextResponse.json({ error: "user not found" }, { status: 404 });
 	else return NextResponse.json({ id: 1, name: "Tipu" });
 }
@@ -21,8 +24,11 @@ export async function PUT(request: NextRequest, { params: { id } }: Props) {
 	else return NextResponse.json({ id: 1, name: "Sultan" });
 }
 
-export async function DELETE(request: NextRequest, { params: { id } }: Props) {
-	if (id > 10)
+export function DELETE(request: NextRequest, { params }: Props) {
+	if (!params?.id) {
+		return NextResponse.json({ error: "Missing user ID" }, { status: 400 });
+	}
+	if (params.id > 10)
 		return NextResponse.json({ error: "user not found" }, { status: 404 });
 	else return NextResponse.json({});
 }
